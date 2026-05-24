@@ -14,6 +14,7 @@ import { AddonPropTypes } from '../Pages/AddonsConfigPage';
 const ANALOG_STICK_MODES = [
 	{ label: 'Left Analog', value: 1 },
 	{ label: 'Right Analog', value: 2 },
+	{ label: 'Trigger Analog', value: 3 },
 ];
 
 const INVERT_MODES = [
@@ -270,6 +271,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										error={errors.analogAdc1Invert}
 										isInvalid={Boolean(errors.analogAdc1Invert)}
 										onChange={handleChange}
+										disabled={Boolean(values.analogAdc1Mode == 3)}
 									>
 										{INVERT_MODES.map((o, i) => (
 											<option
@@ -345,6 +347,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										className="col-sm-3 ms-3"
 										isInvalid={false}
 										checked={Boolean(values.forced_circularity)}
+										disabled={Boolean(values.analogAdc1Mode == 3)}
 										onChange={(e) => {
 											handleCheckbox('forced_circularity');
 											handleChange(e);
@@ -357,6 +360,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										className="form-control-sm"
 										groupClassName="col-sm-3 mb-3"
 										value={values.analog_error}
+										disabled={Boolean(values.analogAdc1Mode == 3)}
 										onChange={handleChange}
 									>
 										{ANALOG_ERROR_RATES.map((o, i) => (
@@ -374,6 +378,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										className="col-sm-3 ms-3"
 										isInvalid={false}
 										checked={Boolean(values.auto_calibrate)}
+										disabled={Boolean(values.analogAdc1Mode == 3)}
 										onChange={(e) => {
 											handleCheckbox('auto_calibrate');
 											handleChange(e);
@@ -382,7 +387,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 									<button
 										type="button"
 										className="btn btn-sm btn-outline-secondary ms-2"
-										disabled={Boolean(values.auto_calibrate)}
+										disabled={Boolean(values.auto_calibrate) || Boolean(values.analogAdc1Mode == 3)}
 										onClick={async () => {
 											try {
 												// Multi-step calibration process
@@ -554,6 +559,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										value={values.analogAdc2Invert}
 										error={errors.analogAdc2Invert}
 										isInvalid={Boolean(errors.analogAdc2Invert)}
+										disabled={Boolean(values.analogAdc3Mode == 3)}
 										onChange={handleChange}
 									>
 										{INVERT_MODES.map((o, i) => (
@@ -630,6 +636,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										className="col-sm-3 ms-3"
 										isInvalid={false}
 										checked={Boolean(values.forced_circularity2)}
+										disabled={Boolean(values.analogAdc3Mode == 3)}
 										onChange={(e) => {
 											handleCheckbox('forced_circularity2');
 											handleChange(e);
@@ -642,6 +649,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										className="form-control-sm"
 										groupClassName="col-sm-3 mb-3"
 										value={values.analog_error2}
+										disabled={Boolean(values.analogAdc3Mode == 3)}
 										onChange={handleChange}
 									>
 										{ANALOG_ERROR_RATES.map((o, i) => (
@@ -659,6 +667,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 										className="col-sm-3 ms-3"
 										isInvalid={false}
 										checked={Boolean(values.auto_calibrate2)}
+										disabled={Boolean(values.analogAdc3Mode == 3)}
 										onChange={(e) => {
 											handleCheckbox('auto_calibrate2');
 											handleChange(e);
@@ -667,7 +676,7 @@ const Analog = ({ values, errors, handleChange, handleCheckbox, setFieldValue }:
 									<button
 										type="button"
 										className="btn btn-sm btn-outline-secondary ms-2"
-										disabled={Boolean(values.auto_calibrate2)}
+										disabled={Boolean(values.auto_calibrate2) || Boolean(values.analogAdc3Mode == 3)}
 										onClick={async () => {
 											try {
 												// Multi-step calibration process

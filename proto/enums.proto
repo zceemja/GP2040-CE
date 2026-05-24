@@ -191,6 +191,7 @@ enum DpadMode
     DPAD_MODE_DIGITAL = 0;
     DPAD_MODE_LEFT_ANALOG = 1;
     DPAD_MODE_RIGHT_ANALOG = 2;
+    DPAD_MODE_TRIGGER_ANALOG = 3;
 }
 
 enum InvertMode

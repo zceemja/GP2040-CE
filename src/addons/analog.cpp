@@ -20,7 +20,7 @@ bool AnalogInput::available() {
 
 void AnalogInput::setup() {
     const AnalogOptions& analogOptions = Storage::getInstance().getAddonOptions().analogOptions;
-    
+
     // Setup our ADC Pair of Sticks
     adc_pairs[0].x_pin = analogOptions.analogAdc1PinX;
     adc_pairs[0].y_pin = analogOptions.analogAdc1PinY;
@@ -48,7 +48,19 @@ void AnalogInput::setup() {
     adc_pairs[1].forced_circularity = analogOptions.forced_circularity2;
     adc_pairs[1].joystick_center_x = analogOptions.joystick_center_x2;
     adc_pairs[1].joystick_center_y = analogOptions.joystick_center_y2;
-    
+
+    Gamepad * gamepad = Storage::getInstance().GetGamepad();
+
+    for (int i = 0; i < ADC_COUNT; i++) {
+        if (adc_pairs[i].analog_dpad == DpadMode::DPAD_MODE_TRIGGER_ANALOG) {
+            // {in,out}_deadzone are used to map to values between 0 and 255
+            gamepad->hasAnalogTriggers = true;
+            float in_min = ADC_MAX * adc_pairs[i].in_deadzone;
+            float in_max = ADC_MAX * adc_pairs[i].out_deadzone;
+            adc_pairs[i].in_deadzone = in_min;
+            adc_pairs[i].out_deadzone = 255.0f / (in_min - in_max);
+        }
+    }
 
     // Setup defaults and helpers
     for (int i = 0; i < ADC_COUNT; i++) {
@@ -100,6 +112,33 @@ void AnalogInput::process() {
 
     for(int i = 0; i < ADC_COUNT; i++) {
         // Read X-Axis
+        if (adc_pairs[i].analog_dpad == DpadMode::DPAD_MODE_TRIGGER_ANALOG) {
+            if (isValidPin(adc_pairs[i].x_pin)) {
+                adc_select_input(adc_pairs[i].x_pin_adc);
+                adc_pairs[i].x_value = adc_read();
+            }
+            if (adc_pairs[i].ema_option) {
+                adc_pairs[i].x_value = emaCalculation(i, adc_pairs[i].x_value, adc_pairs[i].x_ema);
+                adc_pairs[i].x_ema = adc_pairs[i].x_value;
+            }
+
+            if (isValidPin(adc_pairs[i].y_pin)) {
+                adc_select_input(adc_pairs[i].y_pin_adc);
+                adc_pairs[i].y_value = adc_read();
+            }
+            if (adc_pairs[i].ema_option) {
+                adc_pairs[i].y_value = emaCalculation(i, adc_pairs[i].y_value, adc_pairs[i].y_ema);
+                adc_pairs[i].y_ema = adc_pairs[i].y_value;
+            }
+
+            float lt = (adc_pairs[i].x_value - adc_pairs[i].in_deadzone) * adc_pairs[i].out_deadzone;
+            float rt = (adc_pairs[i].y_value - adc_pairs[i].in_deadzone) * adc_pairs[i].out_deadzone;
+
+            gamepad->state.lt = (uint8_t)std::clamp(lt, 0.0f, 255.0f);
+            gamepad->state.rt = (uint8_t)std::clamp(rt, 0.0f, 255.0f);
+            continue;
+        }
+
         if (isValidPin(adc_pairs[i].x_pin)) {
             adc_pairs[i].x_value = readPin(i, adc_pairs[i].x_pin_adc, adc_pairs[i].x_center);
             if (adc_pairs[i].analog_invert == InvertMode::INVERT_X || 

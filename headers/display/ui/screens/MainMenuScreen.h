@@ -35,6 +35,7 @@
 #define DPAD_MODE_DIGITAL_NAME "D-Pad"
 #define DPAD_MODE_LEFT_ANALOG_NAME "Left Analog"
 #define DPAD_MODE_RIGHT_ANALOG_NAME "Right Analog"
+#define DPAD_MODE_TRIGGER_ANALOG_NAME "Trigger Analog"
 
 #define MAIN_MENU_NAME "GP2040-CE Mini Menu"
 
