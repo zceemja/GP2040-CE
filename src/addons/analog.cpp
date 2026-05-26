@@ -58,7 +58,7 @@ void AnalogInput::setup() {
             float in_min = ADC_MAX * adc_pairs[i].in_deadzone;
             float in_max = ADC_MAX * adc_pairs[i].out_deadzone;
             adc_pairs[i].in_deadzone = in_min;
-            adc_pairs[i].out_deadzone = 255.0f / (in_min - in_max);
+            adc_pairs[i].out_deadzone = 255.0f / (in_max - in_min);
         }
     }
 
